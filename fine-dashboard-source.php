@@ -39,6 +39,10 @@ class FineDashboardSource
 		add_action('admin_enqueue_scripts', array($this, 'load_custom_wp_admin_style'));
 		add_action( 'add_meta_boxes_fdcpt_widget', array($this, 'meta_box_for_fdcpt_widget'));
 		add_action( 'save_post_fdcpt_widget', array($this, 'fdcpt_widget_save_meta_boxes_data'), 10, 2);
+
+
+		add_filter( 'manage_fdcpt_widget_posts_columns', array($this, 'set_custom_edit_fdcpt_widget_columns') );
+		add_action( 'manage_fdcpt_widget_posts_custom_column' , array($this, 'custom_fdcpt_widget_column', 10, 2 ));
 	}
 
 	// Load the plugin menu
@@ -85,9 +89,10 @@ class FineDashboardSource
 					'not_found'=>'No Widget Found',
 					'not_found_in_trash'=>'No Widgets Found in Trash',
 					'menu_name' => 'Widgets',
-					'name_admin_bar'     => 'Widgets',
+					'name_admin_bar'=> 'Widgets',
 				),
 			'public'=>true,
+			'show_in_rest'=>true,
 			'description'=>'Fine Dashboard Source Widget',
 			'exclude_from_search'=>false,
 			'show_ui'=>true,
@@ -97,6 +102,24 @@ class FineDashboardSource
 			'supports'=>array('title', 'editor' ,'custom_fields', 'revisions'),
 		));
 	}
+
+
+
+
+	function set_custom_edit_fdcpt_widget_columns($columns) {
+		unset( $columns['post_link'] );
+		$columns['post_link'] = 'Post Link';
+
+		return $columns;
+	}
+	function custom_fdcpt_widget_column( $column, $post_id ) {
+		if ( $column ===  'post_link') {
+			echo $post_id . ' -row';
+		}
+	}
+
+
+
 
 	function meta_box_for_fdcpt_widget( $post ){
 		add_meta_box(
