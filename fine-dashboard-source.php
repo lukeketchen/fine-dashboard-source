@@ -126,11 +126,14 @@ class FineDashboardSource
 
 	function fdcpt_widget_custom_meta_box_html_output( $post ) {
 		wp_nonce_field( basename( __FILE__ ), 'my_custom_meta_box_nonce' ); //used later for security
+
+
+		$alert_box = get_post_meta( $post->ID, 'show_alertbox', true );
 		?>
 
-		<p><input type="checkbox" name="_is_this_alertbox" value="checked" <?= get_post_meta($post->ID, 'show_alertbox', true) ?> /><label for="is_this_alertbox">Alert Widget?</label></p>
+		<p><input type="checkbox" name="_is_this_alertbox" value="checked" <?= isset($alert_box) ? $alert_box : ''; ?> /><label for="is_this_alertbox">Alert Widget?</label></p>
 
-		<?php print_r( get_post_meta($post->ID, 'show_alertbox', true));?>
+		<?php print_r( $alert_box );?>
 
 		<p><input type="checkbox" name="_show_this_widget" value="checked" <?= get_post_meta($post->ID, 'show_widget', true) ?>  /> <label for="show_this_widget">Show Widget?</label></p>
 		<p><input type="text" name="_test_this_field" value=" <?= get_post_meta( $post->ID,  'post_reading_time', true ) ?>" /><label for="show_this_widget">Show Widget?</label></p>
@@ -152,15 +155,15 @@ class FineDashboardSource
 
 		// update fields
 		if ( isset( $_POST['_is_this_alertbox'] ) ) {
-			update_post_meta( $post_id, 'show_alertbox', sanitize_text_field(  $_POST['_is_this_alertbox'] ));
+			update_post_meta( $post_id, 'show_alertbox', $_POST['_is_this_alertbox'] );
 		}
 
 		// update fields
-		if ( isset( $_POST['_show_this_widget'] ) ) {
+		if ( isset( $_POST['_show_this_widget']) ) {
 			update_post_meta( $post_id, 'show_widget', sanitize_text_field(  $_POST['_show_this_widget'] ));
 		}
 
-		if(isset($_POST["_test_this_field"])):
+		if( isset($_POST["_test_this_field"]) ):
 			update_post_meta($post_id, 'post_reading_time', $_POST["_test_this_field"]);
 		endif;
 
