@@ -39,12 +39,8 @@ class FineDashboardSource
 		add_action('admin_enqueue_scripts', array($this, 'load_custom_wp_admin_style'));
 		add_action( 'add_meta_boxes_fdcpt_widget', array($this, 'meta_box_for_fdcpt_widget'));
 		add_action( 'save_post_fdcpt_widget', array($this, 'fdcpt_widget_save_meta_boxes_data'), 10, 2);
-
-
 		add_filter('manage_fdcpt_widget_posts_columns', array($this, 'posts_columns_id'), 5);
 		add_action('manage_fdcpt_widget_posts_custom_column', array($this,  'posts_custom_id_columns'), 5, 2);
-		// add_action('rest_api_init', array($this,  'fdcpt_init_rest_api'), 5, 2);
-		// add_action( 'rest_api_init', array($this, 'rest_api_init'), 10, 2);
 
 	}
 
@@ -58,17 +54,6 @@ class FineDashboardSource
 			'fine_dashboard_source',
 			array($this, 'RenderAdminPage'),
 		);
-
-		// un comment to add ttools page
-		// add_submenu_page(
-		// 	'fine_dashboard_source',
-		// 	'tools',
-		// 	'tools',
-		// 	'manage_options',
-		// 	'fine_dashboard_tools',
-		// 	array($this, 'RenderToolsPage'),
-		// );
-
 		global $menu,$submenu;
 		$submenu['fine_dashboard_source'][0] =  $menu[901];
 		unset($menu[901]);
@@ -106,35 +91,11 @@ class FineDashboardSource
 		));
 	}
 
-
-
-
-	// function fdcpt_init_rest_api() {
-		// register_api_field( 'jedi',
-		// 	'lightsaber_color',
-		// array(
-		// 	'get_callback'    => array($this, 'slug_get_post_meta_cb'),
-		// 	'update_callback' => array($this, 'slug_update_post_meta_cb'),
-		// 	'schema'          => null,
-		// )
-		// );
-	// };
-
-	// function slug_get_post_meta_cb( $object, $field_name, $request ) {
-	// 	return get_post_meta( $object[ 'id' ], $field_name );
-	// }
-
-	// function slug_update_post_meta_cb( $value, $object, $field_name ) {
-	// 	return update_post_meta( $object[ 'id' ], $field_name, $value );
-	// }
-
-
-
-
 	function posts_columns_id($defaults){
 		$defaults['wps_post_id'] = __('Widget ID');
 		return $defaults;
 	}
+
 	function posts_custom_id_columns($column_name, $id){
 		if($column_name === 'wps_post_id'){
 				echo $id;
@@ -155,10 +116,7 @@ class FineDashboardSource
 	function fdcpt_widget_custom_meta_box_html_output( $post ) {
 		wp_nonce_field( basename( __FILE__ ), 'my_custom_meta_box_nonce' ); //used later for security
 		?>
-
-		<p><input type="checkbox" name="_is_this_alertbox" value="checked" <?= get_post_meta( $post->ID, 'show_alertbox', true );; ?> /><label for="is_this_alertbox">Alert Widget?</label></p>
-		<p><input type="checkbox" name="_show_this_widget" value="checked" <?= get_post_meta($post->ID, 'show_widget', true) ?>  /> <label for="show_this_widget">Show Widget?</label></p>
-
+			<p><input type="checkbox" name="_show_this_widget" value="checked" <?= get_post_meta($post->ID, 'show_widget', true) ?>  /> <label for="show_this_widget">Show Widget?</label></p>
 		<?php
 	}
 
@@ -173,7 +131,6 @@ class FineDashboardSource
 		}
 
 		// update fields
-		update_post_meta( $post_id, 'show_alertbox', sanitize_text_field( $_POST['_is_this_alertbox'] ) );
 		update_post_meta( $post_id, 'show_widget', sanitize_text_field(  $_POST['_show_this_widget'] ));
 	}
 
@@ -206,17 +163,6 @@ $FineDashboard = FineDashboardSource::GetInstance();
 $FineDashboard->InitPlugin();
 
 
-
-add_action( 'rest_api_init', function() {
-	register_rest_field( 'fdcpt_widget',
-		'show_alertbox',
-		array(
-			'get_callback'    => 'slug_get_post_meta_cb',
-			'update_callback' => 'slug_update_post_meta_cb',
-			'schema'          => null,
-		)
-	);
-});
 
 add_action( 'rest_api_init', function() {
 	register_rest_field( 'fdcpt_widget',
