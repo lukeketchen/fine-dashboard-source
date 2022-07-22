@@ -43,6 +43,9 @@ class FineDashboardSource
 
 		add_filter('manage_fdcpt_widget_posts_columns', array($this, 'posts_columns_id'), 5);
 		add_action('manage_fdcpt_widget_posts_custom_column', array($this,  'posts_custom_id_columns'), 5, 2);
+		// add_action('rest_api_init', array($this,  'fdcpt_init_rest_api'), 5, 2);
+		// add_action( 'rest_api_init', array($this, 'rest_api_init'), 10, 2);
+
 	}
 
 	// Load the plugin menu
@@ -103,6 +106,31 @@ class FineDashboardSource
 		));
 	}
 
+
+
+
+	// function fdcpt_init_rest_api() {
+		// register_api_field( 'jedi',
+		// 	'lightsaber_color',
+		// array(
+		// 	'get_callback'    => array($this, 'slug_get_post_meta_cb'),
+		// 	'update_callback' => array($this, 'slug_update_post_meta_cb'),
+		// 	'schema'          => null,
+		// )
+		// );
+	// };
+
+	// function slug_get_post_meta_cb( $object, $field_name, $request ) {
+	// 	return get_post_meta( $object[ 'id' ], $field_name );
+	// }
+
+	// function slug_update_post_meta_cb( $value, $object, $field_name ) {
+	// 	return update_post_meta( $object[ 'id' ], $field_name, $value );
+	// }
+
+
+
+
 	function posts_columns_id($defaults){
 		$defaults['wps_post_id'] = __('Widget ID');
 		return $defaults;
@@ -149,6 +177,8 @@ class FineDashboardSource
 		update_post_meta( $post_id, 'show_widget', sanitize_text_field(  $_POST['_show_this_widget'] ));
 	}
 
+
+
 	//	Fine dashboard admin page
 	function RenderAdminPage()
 	{
@@ -174,3 +204,35 @@ class FineDashboardSource
 
 $FineDashboard = FineDashboardSource::GetInstance();
 $FineDashboard->InitPlugin();
+
+
+
+add_action( 'rest_api_init', function() {
+	register_rest_field( 'fdcpt_widget',
+		'show_alertbox',
+		array(
+			'get_callback'    => 'slug_get_post_meta_cb',
+			'update_callback' => 'slug_update_post_meta_cb',
+			'schema'          => null,
+		)
+	);
+});
+
+add_action( 'rest_api_init', function() {
+	register_rest_field( 'fdcpt_widget',
+		'show_widget',
+		array(
+			'get_callback'    => 'slug_get_post_meta_cb',
+			'update_callback' => 'slug_update_post_meta_cb',
+			'schema'          => null,
+		)
+	);
+});
+
+function slug_get_post_meta_cb( $object, $field_name, $request ) {
+    return get_post_meta( $object[ 'id' ], $field_name );
+}
+
+function slug_update_post_meta_cb( $value, $object, $field_name ) {
+    return update_post_meta( $object[ 'id' ], $field_name, $value );
+}
