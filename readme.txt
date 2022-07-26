@@ -2,7 +2,7 @@
 Contributors: Luke Ketchen
 Tags: dashboard, post, admin, logged in
 Requires at least: 5.3
-Tested up to: 5.9
+Tested up to: 6.0.1
 License: GPLv3
 
 === Fine Dashboard Source ===

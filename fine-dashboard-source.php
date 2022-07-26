@@ -1,9 +1,13 @@
 <?php
-/**
+/*
  * Plugin Name: Fine Dashboard - Source
  * Description: Create a source for the Fine Dashboard
- * Author: Luke Ketchen
- * Version: 0.1
+ * Tags: dashboard, notice, admin, logged in, alert
+ * Version: 1.0
+ * Author: Ketchlabs
+ * Author URI: https://lukeketchen.com/
+ * Text Domain: fine-dashboard-source
+ * License GPL2
  */
 
 
