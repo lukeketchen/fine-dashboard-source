@@ -1,8 +1,9 @@
 === Fine Dashboard - Source ===
-Contributors: Luke Ketchen
+Contributors: lukeketchen
 Tags: dashboard, post, admin, logged in
 Requires at least: 5.3
-Tested up to: 6.0.1
+Tested up to: 6.0
+Stable tag: 1.0
 License: GPLv3
 
 === Fine Dashboard Source ===
