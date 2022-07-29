@@ -6,8 +6,7 @@ Tested up to: 6.0
 Stable tag: 1.0
 License: GPLv3
 
-=== Fine Dashboard Source ===
-
+== Description ==
 A source for your custom dashboard! To populate the custom dashboard of Fine Dashboard - Client.
 
 = About The Project =
