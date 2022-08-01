@@ -38,22 +38,22 @@ class FineDashboardSource
 	// Initialize the plugin
 	function InitPlugin()
 	{
-		add_action('init', array($this, 'register_custom_post_types'));
-		add_action('admin_menu', array($this, 'PluginMenu'));
-		add_action('admin_enqueue_scripts', array($this, 'load_custom_wp_admin_style'));
-		add_action( 'add_meta_boxes_fdcpt_widget', array($this, 'meta_box_for_fdcpt_widget'));
-		add_action( 'save_post_fdcpt_widget', array($this, 'fdcpt_widget_save_meta_boxes_data'), 10, 2);
-		add_filter('manage_fdcpt_widget_posts_columns', array($this, 'posts_columns_id'), 5);
-		add_action('manage_fdcpt_widget_posts_custom_column', array($this,  'posts_custom_id_columns'), 5, 2);
+		add_action('init', array($this, 'fdbs_register_custom_post_types'));
+		add_action('admin_menu', array($this, 'fdbs_PluginMenu'));
+		add_action('admin_enqueue_scripts', array($this, 'fdbs_load_custom_wp_admin_style'));
+		add_action( 'add_meta_boxes_fdbscpt_widget', array($this, 'meta_box_for_fdbscpt_widget'));
+		add_action( 'save_post_fdbscpt_widget', array($this, 'fdbscpt_widget_save_meta_boxes_data'), 10, 2);
+		add_filter('manage_fdbscpt_widget_posts_columns', array($this, 'fdbs_posts_columns_id'), 5);
+		add_action('manage_fdbscpt_widget_posts_custom_column', array($this,  'fdbs_posts_custom_id_columns'), 5, 2);
 
 	}
 
 	// Load the plugin menu
-	function PluginMenu()
+	function fdbs_PluginMenu()
 	{
 		add_menu_page(
 			FINE_DASH_SOURCE_PLUGIN_NAME,
-			FINE_DASH_SOURCE_PLUGIN_NAME,
+			__(FINE_DASH_SOURCE_PLUGIN_NAME,'wordpress'),
 			'manage_options',
 			'fine_dashboard_source',
 			array($this, 'RenderAdminPage'),
@@ -64,10 +64,10 @@ class FineDashboardSource
 	}
 
 	// Register the custom post type
-	function register_custom_post_types(){
+	function fdbs_register_custom_post_types(){
 
 		// 'menu_position'=>26,
-		register_post_type('fdcpt_widget',array(
+		register_post_type('fdbscpt_widget',array(
 			'labels'=>
 				array(
 					'name'=>'Widgets',
@@ -95,36 +95,36 @@ class FineDashboardSource
 		));
 	}
 
-	function posts_columns_id($defaults){
+	function fdbs_posts_columns_id($defaults){
 		$defaults['wps_post_id'] = __('Widget ID');
 		return $defaults;
 	}
 
-	function posts_custom_id_columns($column_name, $id){
+	function fdbs_posts_custom_id_columns($column_name, $id){
 		if($column_name === 'wps_post_id'){
 				echo $id;
 		}
 	}
 
-	function meta_box_for_fdcpt_widget( $post ){
+	function meta_box_for_fdbscpt_widget( $post ){
 		add_meta_box(
 			'my_meta_box_custom_id',
 			'Settings',
-			array($this,'fdcpt_widget_custom_meta_box_html_output'),
-			'fdcpt_widget',
+			array($this,'fdbscpt_widget_custom_meta_box_html_output'),
+			'fdbscpt_widget',
 			'normal',
 			'high'
 		);
 	}
 
-	function fdcpt_widget_custom_meta_box_html_output( $post ) {
+	function fdbscpt_widget_custom_meta_box_html_output( $post ) {
 		wp_nonce_field( basename( __FILE__ ), 'my_custom_meta_box_nonce' ); //used later for security
 		?>
-			<p><input type="checkbox" name="_show_this_widget" value="checked" <?= get_post_meta($post->ID, 'show_widget', true) ?>  /> <label for="show_this_widget">Show Widget?</label></p>
+			<p><input type="checkbox" name="_show_this_widget" value="checked" <?php echo get_post_meta($post->ID, 'show_widget', true) ?>  /> <label for="show_this_widget">Show Widget?</label></p>
 		<?php
 	}
 
-	function fdcpt_widget_save_meta_boxes_data( $post_id ){
+	function fdbscpt_widget_save_meta_boxes_data( $post_id ){
 		// check for nonce to top xss
 		if ( !isset( $_POST['my_custom_meta_box_nonce'] ) || !wp_verify_nonce( $_POST['my_custom_meta_box_nonce'], basename( __FILE__ ) ) ){
 			return;
@@ -152,7 +152,7 @@ class FineDashboardSource
 	}
 
 	// Load custom admin page styles
-	function load_custom_wp_admin_style($hook)
+	function fdbs_load_custom_wp_admin_style($hook)
 	{
 		// Load only on ?page=fine-dashboard
 		if( $hook != 'tools_page_fine-dashboard-source/fine-dashboard-source' ) {
@@ -169,7 +169,7 @@ $FineDashboard->InitPlugin();
 
 
 add_action( 'rest_api_init', function() {
-	register_rest_field( 'fdcpt_widget',
+	register_rest_field( 'fdbscpt_widget',
 		'show_widget',
 		array(
 			'get_callback'    => 'slug_get_post_meta_cb',
