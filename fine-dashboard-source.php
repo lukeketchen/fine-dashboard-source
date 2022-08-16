@@ -102,7 +102,7 @@ class FineDashboardSource
 
 	function fdbs_posts_custom_id_columns($column_name, $id){
 		if($column_name === 'wps_post_id'){
-				echo $id;
+				echo esc_html($id);
 		}
 	}
 
@@ -120,7 +120,7 @@ class FineDashboardSource
 	function fdbscpt_widget_custom_meta_box_html_output( $post ) {
 		wp_nonce_field( basename( __FILE__ ), 'my_custom_meta_box_nonce' ); //used later for security
 		?>
-			<p><input type="checkbox" name="_show_this_widget" value="checked" <?php echo get_post_meta($post->ID, 'show_widget', true) ?>  /> <label for="show_this_widget">Show Widget?</label></p>
+			<p><input type="checkbox" name="_show_this_widget" value="checked" <?php echo esc_attr(get_post_meta($post->ID, 'show_widget', true)) ?>  /> <label for="show_this_widget">Show Widget?</label></p>
 		<?php
 	}
 
